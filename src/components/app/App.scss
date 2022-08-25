@@ -1,0 +1,25 @@
+@import "../../index.scss";
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    font-family: "Helvetica", sans-serif;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    width: 100vw;
+    height: 100vh;
+}
+
+.app__custom-node {
+    border-radius: 1em;
+    padding: 1em;
+    background: linear-gradient(to right, $ming, $dark-cyan);
+    color: white;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.4);
+}

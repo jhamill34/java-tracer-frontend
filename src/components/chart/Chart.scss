@@ -1,0 +1,47 @@
+@import "../../index.scss";
+
+.chart__container {
+    position: relative;
+}
+
+.chart__edges {
+    width: 100%;
+    height: 100%;
+}
+
+.chart__nodes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.chart__node {
+    position: absolute;
+    background-color: transparent;
+
+    & > * {
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+    }
+}
+
+.chart__edge {
+    fill: transparent;
+    stroke: $dark;
+    stroke-width: 3;
+}
+
+.chart__arrow {
+    fill: $dark;
+    stroke: $dark;
+    stroke-width: 3;
+}
+
+.chart__anchor {
+    fill: white;
+    stroke: $dark;
+    stroke-width: 3;
+}
