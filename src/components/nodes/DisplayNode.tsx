@@ -1,46 +1,62 @@
 import React from "react"
 import { GetDeclaredMethodData } from "../../connectors/method-api"
 import { DisplayNodeContainerProps } from "../../containers/nodes/DisplayNodeContainer"
+import { MethodEdge } from "../../state/slices/methodGraphSlice"
 
 import "./DisplayNode.scss"
 
 export interface DisplayNodeProps extends DisplayNodeContainerProps {}
 
-function DisplayNodeData(props: { data: GetDeclaredMethodData }): React.ReactElement {
-    const { data } = props
+function DisplayNodeData(props: {
+    node: GetDeclaredMethodData
+    edge: MethodEdge | null
+}): React.ReactElement {
+    const { node, edge } = props
 
-    const methodName = data.name === "<init>" ? "Constructor Call" : data.name
+    const methodName = node.name === "<init>" ? "Constructor Call" : node.name
 
     return (
         <table className="display-node__data">
             <tbody>
                 <tr className="display-node__package display-node__row">
                     <td className="display-node__label">Package</td>
-                    <td>{data.className.split("/").slice(0, -1).join(".")}</td>
+                    <td>{node.className.split("/").slice(0, -1).join(".")}</td>
                 </tr>
                 <tr className="display-node__class display-node__row">
                     <td className="display-node__label">Class</td>
-                    <td>{data.className.split("/").at(-1)}</td>
+                    <td>{node.className.split("/").at(-1)}</td>
                 </tr>
                 <tr className="display-node__method display-node__row">
                     <td className="display-node__label">Method</td>
                     <td>
-                        {methodName} {data.modifiers.includes("static") ? "(static)" : ""}
+                        {methodName} {node.modifiers.includes("static") ? "(static)" : ""}
                     </td>
                 </tr>
+                {edge !== null ? (
+                    <tr>
+                        <td className="display-node__label">Line</td>
+                        <td>{edge.data.linenumber}</td>
+                    </tr>
+                ) : null}
             </tbody>
         </table>
     )
 }
 
 export function DisplayNode(props: DisplayNodeProps): React.ReactElement {
-    const { node, onClick } = props
+    const { node, inboundEdge, onClick } = props
+    console.log(inboundEdge)
 
     return (
-        <div className="display-node" onClick={onClick}>
+        <div
+            className="display-node"
+            onClick={() => {
+                onClick(node, inboundEdge)
+            }}
+        >
             {node !== null ? (
                 node.data !== null ? (
-                    <DisplayNodeData data={node.data} />
+                    <DisplayNodeData node={node.data} edge={inboundEdge} />
                 ) : (
                     node.resourceId
                 )

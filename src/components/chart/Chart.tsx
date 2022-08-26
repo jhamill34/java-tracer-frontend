@@ -17,26 +17,23 @@ export interface GraphSegment {
     edges: Edge[]
 }
 
-export interface Buttons {
-    currentUp: string
-    currentDown: string
-    nextUp: string
-    nextDown: string
+export interface GraphSegmentOffsets {
+    current: number
+    previous: number
+    next: number
 }
 
 export interface ChartProps {
+    offsets: GraphSegmentOffsets
+    maxNodes: number
     nodeSize: Dimension
     graphSegment: GraphSegment
     spacing: Spacing
-    currentUp?: React.ReactNode
-    currentDown?: React.ReactNode
-    nextUp?: React.ReactNode
-    nextDown?: React.ReactNode
     node: (nodeId: string) => React.ReactNode
 }
 
 export function Chart(props: ChartProps): React.ReactElement {
-    const { nodeSize, graphSegment, spacing } = props
+    const { nodeSize, graphSegment, offsets, maxNodes, spacing } = props
 
     const [width, setWidth] = useState<number | null>(null)
     const [height, setHeight] = useState<number | null>(null)
@@ -67,13 +64,34 @@ export function Chart(props: ChartProps): React.ReactElement {
             y: height / 2,
         }
 
+        console.log(offsets)
         positions = {
-            ...calculateNodePositions(graphSegment.previous, center, nodeSize, spacing, -1),
-            ...calculateNodePositions(graphSegment.current, center, nodeSize, spacing, 0),
-            ...calculateNodePositions(graphSegment.next, center, nodeSize, spacing, 1),
+            ...calculateNodePositions(
+                graphSegment.previous.slice(offsets.previous, offsets.previous + maxNodes),
+                center,
+                nodeSize,
+                spacing,
+                -1,
+            ),
+            ...calculateNodePositions(
+                graphSegment.current.slice(offsets.current, offsets.current + maxNodes),
+                center,
+                nodeSize,
+                spacing,
+                0,
+            ),
+            ...calculateNodePositions(
+                graphSegment.next.slice(offsets.next, offsets.next + maxNodes),
+                center,
+                nodeSize,
+                spacing,
+                1,
+            ),
         }
 
-        edges = graphSegment.edges
+        edges = graphSegment.edges.filter(
+            (edge) => edge.fromId in positions && edge.toId in positions,
+        )
     }
 
     const nodeTransitions = useTransition(

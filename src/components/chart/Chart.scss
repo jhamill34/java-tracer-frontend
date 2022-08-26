@@ -2,6 +2,7 @@
 
 .chart__container {
     position: relative;
+    background-color: lighten($dark, 30%);
 }
 
 .chart__edges {

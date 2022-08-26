@@ -6,7 +6,7 @@ import {
     getDeclaredMethodCalls,
     GetDeclaredMethodCallsResponse,
 } from "../../connectors/method-api"
-import { addEdges, addNode, pushHistory, selectCurrentMethodId } from "../slices/methodGraphSlice"
+import { addEdges, addNode, HistoricalEntry, pushHistory } from "../slices/methodGraphSlice"
 import { selectRootMethod } from "../slices/methodInputSlice"
 import { AppEpic } from "../store"
 
@@ -21,21 +21,20 @@ function inputHasPayload<T>(input: AnyAction): input is PayloadAction<T> {
 const setRootEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType("methodInput/setRootMethod"),
-        mergeMap(() => of(pushHistory(selectRootMethod(state$.value)))),
+        mergeMap(() =>
+            of(pushHistory({ resourceId: selectRootMethod(state$.value), incomingEdge: null })),
+        ),
     )
 
 const getMethodCallsEpic: AppEpic = (action$, state$) =>
     action$.pipe(
         ofType("methodGraph/pushHistory"),
-        mergeMap(() =>
-            of(selectCurrentMethodId(state$.value)).pipe(
-                filter(inputIsNotNullOrUndefined),
-                mergeMap((method) =>
-                    merge(
-                        from(getDeclaredMethod(method)).pipe(map(addNode)),
-                        from(getDeclaredMethodCalls(method)).pipe(map(addEdges)),
-                    ),
-                ),
+        filter(inputHasPayload<HistoricalEntry>),
+        map((action) => action.payload.resourceId),
+        mergeMap((data) =>
+            merge(
+                from(getDeclaredMethod(data)).pipe(map(addNode)),
+                from(getDeclaredMethodCalls(data)).pipe(map(addEdges)),
             ),
         ),
     )

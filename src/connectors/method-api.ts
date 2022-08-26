@@ -13,7 +13,6 @@ export interface GetDeclaredMethodData {
 export type GetDelcaredMethodResponse = Response<GetDeclaredMethodData>
 
 export async function getDeclaredMethod(methodName: string): Promise<GetDelcaredMethodResponse> {
-    console.log(methodName)
     return await apiCall(METHOD_TYPE, methodName)
 }
 

@@ -8,7 +8,14 @@ interface EdgeProps {
 }
 
 function generatePath(from: Position, to: Position): string {
-    return `M ${from.x} ${from.y} C ${to.x} ${from.y}, ${from.x} ${to.y}, ${to.x} ${to.y}`
+    const mid: Position = {
+        x: (from.x + to.x) / 2,
+        y: (from.y + to.y) / 2,
+    }
+
+    const start = `${from.x} ${from.y}`
+
+    return `M ${start} H ${mid.x} V ${to.y} H ${to.x}`
 }
 
 function generateArrow(p: Position, size: number, reverse: boolean): string {
