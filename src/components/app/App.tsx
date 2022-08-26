@@ -15,7 +15,7 @@ export function App(): React.ReactElement {
                 nodeSize={{ width: 400, height: 150 }}
                 node={(nodeId: string) => <DisplayNodeContainer nodeId={nodeId} />}
             />
-            <SidePanel active={false}></SidePanel>
+            <SidePanel>Side Panel</SidePanel>
         </div>
     )
 }

@@ -209,8 +209,6 @@ export function selectCurrentView({ methodGraph }: RootState): SelectedView {
         }
     }
 
-    console.log(result)
-
     return result
 }
 

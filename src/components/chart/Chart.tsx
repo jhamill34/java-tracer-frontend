@@ -64,7 +64,6 @@ export function Chart(props: ChartProps): React.ReactElement {
             y: height / 2,
         }
 
-        console.log(offsets)
         positions = {
             ...calculateNodePositions(
                 graphSegment.previous.slice(offsets.previous, offsets.previous + maxNodes),

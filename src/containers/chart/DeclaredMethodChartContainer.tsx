@@ -42,7 +42,6 @@ function selectedViewToGraphSegment(
                 currentIndex > Math.floor(maxNodes / 2)
                     ? currentIndex - Math.floor(maxNodes / 2)
                     : 0
-            console.log(currentOffset, currentIndex, maxNodes)
 
             result.edges = edges[current.resourceId].map((edge) => ({
                 fromId: `${current.resourceId}:${incomingEdge.data.linenumber}`,

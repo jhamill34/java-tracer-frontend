@@ -45,7 +45,6 @@ function DisplayNodeData(props: {
 
 export function DisplayNode(props: DisplayNodeProps): React.ReactElement {
     const { node, inboundEdge, onClick } = props
-    console.log(inboundEdge)
 
     return (
         <div
