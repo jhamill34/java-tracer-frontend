@@ -31,8 +31,8 @@ export interface GetClassPackageData {
     package: string
 }
 
-export type GetClassPackageResource = Response<GetClassPackageData>
+export type GetClassPackageResponse = Response<GetClassPackageData>
 
-export async function getClassPackage(className: string): Promise<GetClassPackageResource> {
+export async function getClassPackage(className: string): Promise<GetClassPackageResponse> {
     return await apiCall(CLASS_TYPE, className, PACKAGE_TYPE)
 }

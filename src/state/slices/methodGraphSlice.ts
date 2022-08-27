@@ -6,8 +6,6 @@ import {
 } from "../../connectors/method-api"
 import { RootState } from "../store"
 
-type ResourceId = string
-
 export interface HistoricalEntry {
     resourceId: ResourceId
     incomingEdge: MethodEdge | null
@@ -54,12 +52,12 @@ export const methodGraphSlice = createSlice({
     name: "methodGraph",
     initialState,
     reducers: {
-        addNode: (state, { payload }: PayloadAction<GetDelcaredMethodResponse>) => {
+        addMethodNode: (state, { payload }: PayloadAction<GetDelcaredMethodResponse>) => {
             if (payload.data !== null) {
                 state.nodes[payload.resourceId] = payload
             }
         },
-        addEdges: (state, { payload }: PayloadAction<GetDeclaredMethodCallsResponse>) => {
+        addMethodEdges: (state, { payload }: PayloadAction<GetDeclaredMethodCallsResponse>) => {
             if (payload.data !== null) {
                 // When we add an edge we'll keep track of all the nodes
                 state.outbound[payload.resourceId] = payload.data.map((data) => ({
@@ -113,7 +111,7 @@ export const methodGraphSlice = createSlice({
     },
 })
 
-export const { addNode, addEdges, pushHistory } = methodGraphSlice.actions
+export const { addMethodNode, addMethodEdges, pushHistory } = methodGraphSlice.actions
 
 export function selectInboundEdge(
     { methodGraph }: RootState,
@@ -140,6 +138,16 @@ export function selectMethod(
     if (methodGraph.nodes[nodeId] !== undefined) {
         return methodGraph.nodes[nodeId]
     }
+    return null
+}
+
+export function selectCurrentMethod({ methodGraph }: RootState): HistoricalEntry | null {
+    const current = methodGraph.history.at(-1)
+
+    if (current !== undefined) {
+        return current
+    }
+
     return null
 }
 

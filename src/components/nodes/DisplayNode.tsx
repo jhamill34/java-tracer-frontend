@@ -33,7 +33,7 @@ function DisplayNodeData(props: {
                     </td>
                 </tr>
                 {edge !== null ? (
-                    <tr>
+                    <tr className="display-node__row">
                         <td className="display-node__label">Line</td>
                         <td>{edge.data.linenumber}</td>
                     </tr>
