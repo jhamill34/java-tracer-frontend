@@ -1,12 +1,14 @@
 import React, { useState } from "react"
-import { NavigationContainerProps } from "../../containers/navigation/NavigationContainer"
 import "./Navigation.scss"
 
 export interface NavigationOwnProps {
     title: string
 }
 
-type NavigationProps = NavigationOwnProps & NavigationContainerProps
+interface NavigationProps {
+    title: string
+    onSubmit: (value: string) => void
+}
 
 const DEFAULT_VALUE = "tech/jhamill34/app/Application"
 
