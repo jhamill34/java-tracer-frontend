@@ -38,9 +38,11 @@
         "webpack-dev-server": "^4.10.0"
     },
     "dependencies": {
+        "@apollo/client": "^3.6.9",
         "@react-spring/web": "^9.5.2",
         "crypto-js": "^4.1.1",
         "css-loader": "^6.7.1",
+        "graphql": "^16.6.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-icons": "^4.4.0",
