@@ -32,6 +32,9 @@ export interface ChartProps {
     node: (nodeId: string) => React.ReactNode
 }
 
+/**
+ * @deprecated Keeping around just because I found this implementation interesting
+ */
 export function Chart(props: ChartProps): React.ReactElement {
     const { nodeSize, graphSegment, offsets, maxNodes, spacing } = props
 

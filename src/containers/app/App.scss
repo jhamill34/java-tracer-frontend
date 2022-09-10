@@ -15,8 +15,8 @@ html {
     right: 0;
     bottom: 0;
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: auto auto 1fr;
 }
 
 .app__custom-node {

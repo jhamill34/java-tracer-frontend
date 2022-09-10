@@ -46,6 +46,7 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-icons": "^4.4.0",
+        "reaflow": "^5.0.6",
         "style-loader": "^3.3.1"
     }
 }
