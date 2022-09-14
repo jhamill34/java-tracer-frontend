@@ -1,37 +1,39 @@
-import { gql, useQuery } from "@apollo/client"
-import React from "react"
-import { ErrorComponent } from "../../components/errors/Error"
-import { Flow } from "../../components/flow/Flow"
-import { Loading } from "../../components/loading/Loading"
+import React, { useState } from "react"
 import { SidePanel } from "../../components/side-panel/SidePanel"
 import { Toolbar } from "../../components/toolbar/Toolbar"
+import { MethodFlow } from "../flow/MethodFlow"
 import { NavigationContainer } from "../navigation/NavigationContainer"
-import "./App.scss"
+import { ClassSearch } from "../search/ClassSearch"
+import { ClassInfoPanelContainer } from "../side-panel/ClassInfoPanelContainer"
 
 export const TITLE = "Java Tracer"
 
-interface GetSelected {
-    selected: string
-}
-
-export const SELECTED_QUERY = gql`
-    query GetSelected {
-        selected @client
-    }
-`
-
 export function App(): React.ReactElement {
-    const { loading, error } = useQuery<GetSelected>(SELECTED_QUERY)
-
-    if (loading) return <Loading />
-    if (error != null) return <ErrorComponent />
+    const [selectedClassId, setSelectedClassId] = useState<string | null>(null)
+    const [selectedMethodId, setSelectedMethodId] = useState<string | null>(null)
 
     return (
-        <div className="grid">
+        <div className="grid grid-cols-12 grid-rows-[auto_auto_minmax(0,1fr)] fixed top-0 left-0 right-0 bottom-0">
             <NavigationContainer title={TITLE} />
-            <Toolbar />
-            <Flow />
-            <SidePanel />
+            <Toolbar>
+                <ClassSearch onSelect={setSelectedClassId} />
+            </Toolbar>
+            <div className="col-span-8">
+                {selectedMethodId != null ? (
+                    <MethodFlow id={selectedMethodId} />
+                ) : (
+                    <div>No method selected</div>
+                )}
+            </div>
+            <SidePanel>
+                {selectedClassId != null && (
+                    <ClassInfoPanelContainer
+                        onSelectMethod={setSelectedMethodId}
+                        onSelectClass={setSelectedClassId}
+                        id={selectedClassId}
+                    />
+                )}
+            </SidePanel>
         </div>
     )
 }

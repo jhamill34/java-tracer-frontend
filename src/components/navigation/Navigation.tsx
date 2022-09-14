@@ -1,5 +1,4 @@
 import React from "react"
-import "./Navigation.scss"
 
 export interface NavigationOwnProps {
     title: string
@@ -13,8 +12,8 @@ export function Navigation(props: NavigationProps): React.ReactElement {
     const { title } = props
 
     return (
-        <nav className="navigation">
-            <h1 className="navigation__header">{title}</h1>
+        <nav className="bg-emerald-400 p-4 shadow-md z-30 col-span-full flex">
+            <h1 className="text-2xl font-bold">{title}</h1>
         </nav>
     )
 }

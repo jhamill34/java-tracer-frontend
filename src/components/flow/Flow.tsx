@@ -1,54 +1,52 @@
-import React from "react"
+import React, { useRef } from "react"
+import { ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
 import { Canvas, EdgeData, Node, NodeData } from "reaflow"
 
-import "./Flow.scss"
+import "./Flow.css"
 
-const nodes: NodeData[] = [
-    {
-        id: "1",
-        text: "1",
-    },
-    {
-        id: "2",
-        text: "2",
-    },
-    {
-        id: "2.1",
-        text: "2.1",
-        parent: "2",
-    },
-    {
-        id: "3",
-        text: "3",
-    },
-]
+interface FlowProps {
+    nodes: NodeData[]
+    edges: EdgeData[]
+    onNodeSelect: (id: string) => void
+}
 
-const edges: EdgeData[] = [
-    {
-        from: "1",
-        to: "2",
-        id: "1-2",
-    },
-    {
-        from: "2",
-        to: "3",
-        id: "21-3",
-    },
-]
+export function Flow(props: FlowProps): React.ReactElement {
+    const { nodes, edges, onNodeSelect } = props
+    const transformerRef = useRef<ReactZoomPanPinchRef>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
 
-export function Flow(): React.ReactElement {
     return (
-        <Canvas
-            className="flow__canvas"
-            nodes={nodes}
-            edges={edges}
-            node={
-                <Node
-                    onClick={(event, node) => {
-                        console.log(node.id)
-                    }}
-                />
-            }
-        />
+        <div className="flow__container" ref={containerRef}>
+            <TransformWrapper
+                ref={transformerRef}
+                maxScale={4}
+                minScale={0.2}
+                wheel={{ step: 0.1 }}
+                limitToBounds={false}
+            >
+                <TransformComponent>
+                    <Canvas
+                        className="flow__canvas"
+                        nodes={nodes}
+                        edges={edges}
+                        zoomable={false}
+                        fit={true}
+                        maxHeight={20000}
+                        maxWidth={20000}
+                        onLayoutChange={() => {
+                            const width = containerRef?.current?.getBoundingClientRect().width ?? 0
+                            transformerRef?.current?.setTransform(width / 2 - 10000, -10000, 1)
+                        }}
+                        node={
+                            <Node
+                                onClick={(_, node) => {
+                                    onNodeSelect(node.id)
+                                }}
+                            />
+                        }
+                    />
+                </TransformComponent>
+            </TransformWrapper>
+        </div>
     )
 }

@@ -5,6 +5,8 @@ import { createRoot } from "react-dom/client"
 import { App } from "./containers/app/App"
 import { cache } from "./state/cache"
 
+import "./styles.css"
+
 const container = document.getElementById("root")
 
 const client = new ApolloClient({

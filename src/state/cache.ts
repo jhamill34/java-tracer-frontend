@@ -1,16 +1,18 @@
 import { InMemoryCache, makeVar } from "@apollo/client"
+import { relayStylePagination } from "@apollo/client/utilities"
 
-export const selectedVar = makeVar("")
+export const selectedClassIdVar = makeVar("")
 
 export const cache = new InMemoryCache({
     typePolicies: {
         Query: {
             fields: {
-                selected: {
+                selectedClassId: {
                     read() {
-                        return selectedVar()
+                        return selectedClassIdVar()
                     },
                 },
+                classes: relayStylePagination(),
             },
         },
     },

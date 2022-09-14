@@ -19,3 +19,24 @@ interface Dimension {
 }
 
 type ResourceId = string
+
+interface PageInfo {
+    hasNextPage: boolean
+    endCursor: string
+}
+
+interface Connector<T> {
+    edges: Array<Edge<T>>
+    pageInfo: PageInfo
+}
+
+interface Edge<T> {
+    node: T
+    cursor?: string
+}
+
+interface MinimalClassInfo {
+    id: string
+    name: string
+    packageName: string
+}

@@ -1,7 +1,5 @@
 import React from "react"
 
-import "./SidePanel.scss"
-
 interface SidePanelProps {
     children?: React.ReactNode
 }
@@ -9,5 +7,5 @@ interface SidePanelProps {
 export function SidePanel(props: SidePanelProps): React.ReactElement {
     const { children } = props
 
-    return <div className="side-panel">{children}</div>
+    return <div className="z-10 col-span-4 shadow-md p-4 overflow-y-scroll">{children}</div>
 }

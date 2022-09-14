@@ -3,7 +3,7 @@ import { NodeItem } from "./graph/NodeItem"
 import { EdgeItem } from "./graph/EdgeItem"
 import { animated, useTransition, config } from "@react-spring/web"
 
-import "./Chart.scss"
+// import "./Chart.scss"
 
 export interface Edge {
     fromId: string
