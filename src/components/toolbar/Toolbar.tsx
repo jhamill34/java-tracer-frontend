@@ -6,7 +6,7 @@ interface ToolbarProps {
 
 export function Toolbar(props: ToolbarProps): React.ReactElement {
     return (
-        <div className="col-span-full shadow-md z-20 p-2 bg-amber-100 grid grid-cols-12">
+        <div className="shadow-md p-2 z-20 bg-secondary text-dark grid grid-cols-12">
             {props.children}
         </div>
     )

@@ -1,10 +1,11 @@
 import React, { useRef } from "react"
 import { ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
-import { Canvas, EdgeData, Node, NodeData } from "reaflow"
+import { Canvas, Edge, EdgeData, Label, MarkerArrow, Node, NodeData } from "reaflow"
 
 import "./Flow.css"
 
 interface FlowProps {
+    selectedNode?: string
     nodes: NodeData[]
     edges: EdgeData[]
     onNodeSelect: (id: string) => void
@@ -22,7 +23,8 @@ export function Flow(props: FlowProps): React.ReactElement {
                 maxScale={4}
                 minScale={0.2}
                 wheel={{ step: 0.1 }}
-                limitToBounds={false}
+                limitToBounds={true}
+                centerOnInit={true}
             >
                 <TransformComponent>
                     <Canvas
@@ -31,17 +33,20 @@ export function Flow(props: FlowProps): React.ReactElement {
                         edges={edges}
                         zoomable={false}
                         fit={true}
-                        maxHeight={20000}
-                        maxWidth={20000}
-                        onLayoutChange={() => {
-                            const width = containerRef?.current?.getBoundingClientRect().width ?? 0
-                            transformerRef?.current?.setTransform(width / 2 - 10000, -10000, 1)
-                        }}
+                        edge={<Edge className="stroke-zinc-400 stroke-2 flow__custom-edge" />}
+                        arrow={<MarkerArrow className="stroke-zinc-400 fill-zinc-400" />}
+                        maxWidth={4000}
+                        maxHeight={4000}
                         node={
                             <Node
                                 onClick={(_, node) => {
                                     onNodeSelect(node.id)
                                 }}
+                                linkable={false}
+                                label={<Label className="fill-zinc-500" />}
+                                className="fill-white stroke-zinc-400 stroke-2 hover:fill-zinc-200 hover:!stroke-zinc-400 transition-colors"
+                                rx={15}
+                                ry={15}
                             />
                         }
                     />

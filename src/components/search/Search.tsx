@@ -64,14 +64,14 @@ export function Search(props: SearchProps): React.ReactElement {
                 <label className="font-bold" {...getLabelProps()}>
                     Class Name:
                 </label>
-                <div className="flex flex-1 shadow-md bg-white gap-0.5" {...getComboboxProps()}>
+                <div className="flex flex-1 shadow-md bg-light gap-0.5" {...getComboboxProps()}>
                     <input className="p-2 flex-1" placeholder={placeholder} {...getInputProps()} />
                     <button className="px-2" {...getToggleButtonProps()}>
                         {isOpen ? <>&#8593;</> : <>&#8595;</>}
                     </button>
                 </div>
             </div>
-            <ul className="absolute left-16 w-1/3 p-0 bg-white" {...getMenuProps()}>
+            <ul className="absolute left-16 w-1/3 p-0 bg-light" {...getMenuProps()}>
                 {isOpen && (
                     <InfiniteLoader
                         isItemLoaded={isItemLoaded}
@@ -90,7 +90,7 @@ export function Search(props: SearchProps): React.ReactElement {
                             >
                                 {({ index, style }) => (
                                     <div
-                                        className="py-2 bg-white px-3 flex flex-row align-middle justify-between border-b-2 border-gray-100 hover:bg-slate-100 transition-colors cursor-pointer"
+                                        className="py-2 bg-light px-3 flex flex-row align-middle justify-between border-b-2 border-gray-100 hover:bg-slate-100 transition-colors cursor-pointer"
                                         style={style}
                                         {...getItemProps({ item: items[index], index })}
                                     >

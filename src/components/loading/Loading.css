@@ -1,0 +1,21 @@
+.loading__circle {
+    stroke-linecap: round;
+    stroke-width: 8;
+    stroke-dasharray: 252;
+    stroke-dashoffset: 252;
+    animation: draw 4s ease-in-out infinite;
+    transform-origin: center center;
+    transform: rotateZ(0deg);
+}
+
+@keyframes draw {
+    50% {
+        stroke-dashoffset: 0;
+        transform: rotateZ(360deg);
+    }
+    90%,
+    100% {
+        stroke-dashoffset: -251;
+        transform: rotateZ(720deg);
+    }
+}

@@ -1,3 +1,4 @@
+.flow__container,
 .flow__container > div {
     width: 100%;
     height: 100%;
@@ -14,4 +15,16 @@
         transparent 100%
     );
     background-size: 20px 20px;
+    cursor: grab;
+}
+
+.flow__custom-edge {
+    stroke-dasharray: 10;
+    animation: dash 1s linear infinite;
+}
+
+@keyframes dash {
+    0% {
+        stroke-dashoffset: 20;
+    }
 }

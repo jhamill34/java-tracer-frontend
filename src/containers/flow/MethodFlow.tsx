@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client"
-import React from "react"
+import React, { useMemo } from "react"
 import { EdgeData, NodeData } from "reaflow"
 import { ErrorComponent } from "../../components/errors/Error"
 import { Flow } from "../../components/flow/Flow"
@@ -7,6 +7,8 @@ import { Loading } from "../../components/loading/Loading"
 
 interface MethodFlowProps {
     id: string
+    selectedInstruction?: string
+    onInstructionSelect: (instructions: InstructionModel[]) => void
 }
 
 interface MethodResponse {
@@ -20,12 +22,21 @@ interface MethodModel {
     instructions: Connector<InstructionModel>
 }
 
-interface InstructionModel {
+export interface InstructionModel {
     id: string
     opCode: string
     lineNumber: number
     next: string[]
     previous: string[]
+    stack: string[]
+    enteringVariables: Connector<VariableModel>
+    exitingVariables: Connector<VariableModel>
+}
+
+export interface VariableModel {
+    name: string
+    descriptor: string
+    signature: string
 }
 
 interface GetMethodInput {
@@ -46,6 +57,25 @@ const GET_METHOD_GRAPH_QUERY = gql`
                         lineNumber
                         next
                         previous
+                        stack
+                        enteringVariables {
+                            edges {
+                                node {
+                                    name
+                                    descriptor
+                                    signature
+                                }
+                            }
+                        }
+                        exitingVariables {
+                            edges {
+                                node {
+                                    name
+                                    descriptor
+                                    signature
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -94,6 +124,7 @@ function createSimplifiedInstructionGraph(instructions: InstructionModel[]): Sim
         const children = outList.get(current) ?? []
         if (children.length > 1) {
             simpleAdjList.set(current, children)
+
             children.forEach((child) => {
                 if (seen.has(child)) {
                     const prev = unionSet.get(child)
@@ -138,7 +169,10 @@ function createSimplifiedInstructionGraph(instructions: InstructionModel[]): Sim
         const nodes: InstructionModel[] = []
         let previous = key
         let current = unionSet.get(key)
-        let model: InstructionModel | null
+        let model: InstructionModel | null = nodeHash.get(key) ?? null
+        if (model != null) {
+            nodes.push(model)
+        }
 
         while (current != null && current !== previous) {
             model = nodeHash.get(current) ?? null
@@ -151,11 +185,6 @@ function createSimplifiedInstructionGraph(instructions: InstructionModel[]): Sim
         }
 
         if (current != null) {
-            model = nodeHash.get(current) ?? null
-            if (model != null) {
-                nodes.push(model)
-            }
-
             resultAdjList.set(current, value)
             resultNodeHash.set(current, nodes)
         }
@@ -167,6 +196,41 @@ function createSimplifiedInstructionGraph(instructions: InstructionModel[]): Sim
     }
 }
 
+function useSimplifiedGraph(data?: MethodResponse): [NodeData[], EdgeData[], SimpleGraph | null] {
+    let simpleGraph: SimpleGraph | null = null
+    return useMemo(() => {
+        const nodes: NodeData[] = []
+        const edges: EdgeData[] = []
+        if (data != null) {
+            simpleGraph = createSimplifiedInstructionGraph(
+                data.method.instructions.edges.map((e) => e.node),
+            )
+
+            console.log(simpleGraph)
+
+            simpleGraph.simpleNodeHash.forEach((node, key) => {
+                const from = node.reverse().find((n) => n.lineNumber > 0)?.lineNumber ?? "?"
+                nodes.push({
+                    id: key,
+                    text: `Line ${from}`,
+                })
+            })
+
+            simpleGraph.simpleAdjList.forEach((value, key) => {
+                value.forEach((v) => {
+                    edges.push({
+                        id: `${key}-${v}`,
+                        from: key,
+                        to: v,
+                    })
+                })
+            })
+        }
+
+        return [nodes, edges, simpleGraph]
+    }, [data])
+}
+
 export function MethodFlow(props: MethodFlowProps): React.ReactElement {
     const { data, loading, error } = useQuery<MethodResponse, GetMethodInput>(
         GET_METHOD_GRAPH_QUERY,
@@ -175,34 +239,18 @@ export function MethodFlow(props: MethodFlowProps): React.ReactElement {
         },
     )
 
+    const [nodes, edges, simpleGraph] = useSimplifiedGraph(data)
+
     if (loading) return <Loading />
     if (error != null) return <ErrorComponent />
 
-    const nodes: NodeData[] = []
-    const edges: EdgeData[] = []
-
-    if (data != null) {
-        const simpleGraph = createSimplifiedInstructionGraph(
-            data.method.instructions.edges.map((e) => e.node),
-        )
-
-        simpleGraph.simpleNodeHash.forEach((node, key) => {
-            nodes.push({
-                id: key,
-                text: key,
-            })
-        })
-
-        simpleGraph.simpleAdjList.forEach((value, key) => {
-            value.forEach((v) => {
-                edges.push({
-                    id: `${key}-${v}`,
-                    from: key,
-                    to: v,
-                })
-            })
-        })
-    }
-
-    return <Flow nodes={nodes} edges={edges} onNodeSelect={() => {}} />
+    return (
+        <Flow
+            nodes={nodes}
+            edges={edges}
+            onNodeSelect={(node) => {
+                props.onInstructionSelect(simpleGraph?.simpleNodeHash.get(node) ?? [])
+            }}
+        />
+    )
 }
