@@ -13,24 +13,6 @@ interface ListClassesArgs {
     nameFilter: string
 }
 
-const LIST_CLASSES_QUERY = gql`
-    query ListClasses($first: Int!, $after: String!, $nameFilter: String!) {
-        classes(first: $first, after: $after, filter: { name: $nameFilter }) {
-            edges {
-                node {
-                    id
-                    name
-                    packageName
-                }
-            }
-            pageInfo {
-                hasNextPage
-                endCursor
-            }
-        }
-    }
-`
-
 interface ClassSearchProps {
     onSelect: (id: string) => void
 }
@@ -84,3 +66,21 @@ export function ClassSearch(props: ClassSearchProps): React.ReactElement {
         />
     )
 }
+
+const LIST_CLASSES_QUERY = gql`
+    query ListClasses($first: Int!, $after: String!, $nameFilter: String!) {
+        classes(first: $first, after: $after, filter: { name: $nameFilter }) {
+            edges {
+                node {
+                    id
+                    name
+                    packageName
+                }
+            }
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+        }
+    }
+`

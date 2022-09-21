@@ -35,8 +35,35 @@ interface Edge<T> {
     cursor?: string
 }
 
-interface MinimalClassInfo {
+interface ClassModel {
     id: string
     name: string
     packageName: string
+    modifiers: string[]
+    methods: Connector<MethodModel>
+}
+
+interface MethodModel {
+    name: string
+    owner: ClassModel
+    descriptor: string
+    modifiers: string[]
+    instructions: Connector<InstructionModel>
+}
+
+interface InstructionModel {
+    id: string
+    opCode: string
+    lineNumber: number
+    next: string[]
+    previous: string[]
+    stack: string[]
+    enteringVariables: Connector<VariableModel>
+    exitingVariables: Connector<VariableModel>
+}
+
+interface VariableModel {
+    name: string
+    descriptor: string
+    signature: string
 }

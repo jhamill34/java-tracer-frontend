@@ -1,4 +1,5 @@
 import React from "react"
+import { NavLink } from "react-router-dom"
 
 export interface Location {
     name: string
@@ -14,11 +15,20 @@ export function TabNavigation(props: TabNavigationProps): React.ReactElement {
     return (
         <ul className="flex flex-row p-2 gap-2">
             {locations.map((l) => (
-                <li
-                    className="p-2 cursor-pointer hover:bg-slate-200 transition-colors rounded-md"
-                    key={l.name}
-                >
-                    {l.name}
+                <li key={l.name}>
+                    <NavLink
+                        className={({ isActive }) => {
+                            let classes =
+                                "p-2 cursor-pointer hover:bg-slate-200 transition-colors rounded-md"
+                            if (isActive) {
+                                classes += " bg-slate-200"
+                            }
+                            return classes
+                        }}
+                        to={l.url}
+                    >
+                        {l.name}
+                    </NavLink>
                 </li>
             ))}
         </ul>

@@ -1,25 +1,23 @@
-import React, { useRef } from "react"
-import { ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
+import React from "react"
+import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch"
 import { Canvas, Edge, EdgeData, Label, MarkerArrow, Node, NodeData } from "reaflow"
+import cx from "classnames"
 
 import "./Flow.css"
 
 interface FlowProps {
-    selectedNode?: string
+    selectedNode?: string | null
     nodes: NodeData[]
     edges: EdgeData[]
     onNodeSelect: (id: string) => void
 }
 
 export function Flow(props: FlowProps): React.ReactElement {
-    const { nodes, edges, onNodeSelect } = props
-    const transformerRef = useRef<ReactZoomPanPinchRef>(null)
-    const containerRef = useRef<HTMLDivElement>(null)
+    const { nodes, edges, onNodeSelect, selectedNode } = props
 
     return (
-        <div className="flow__container" ref={containerRef}>
+        <div className="flow__container">
             <TransformWrapper
-                ref={transformerRef}
                 maxScale={4}
                 minScale={0.2}
                 wheel={{ step: 0.1 }}
@@ -37,18 +35,32 @@ export function Flow(props: FlowProps): React.ReactElement {
                         arrow={<MarkerArrow className="stroke-zinc-400 fill-zinc-400" />}
                         maxWidth={4000}
                         maxHeight={4000}
-                        node={
-                            <Node
-                                onClick={(_, node) => {
-                                    onNodeSelect(node.id)
-                                }}
-                                linkable={false}
-                                label={<Label className="fill-zinc-500" />}
-                                className="fill-white stroke-zinc-400 stroke-2 hover:fill-zinc-200 hover:!stroke-zinc-400 transition-colors"
-                                rx={15}
-                                ry={15}
-                            />
-                        }
+                        node={(nodeProps) => {
+                            return (
+                                <Node
+                                    {...nodeProps}
+                                    onClick={(_, node) => {
+                                        onNodeSelect(node.id)
+                                    }}
+                                    linkable={false}
+                                    label={
+                                        <Label
+                                            className={cx({
+                                                "fill-zinc-400": true,
+                                            })}
+                                        />
+                                    }
+                                    className={cx(
+                                        "fill-white stroke-zinc-400 stroke-2 hover:!stroke-primary transition-colors",
+                                        {
+                                            "!stroke-primary": nodeProps.id === selectedNode,
+                                        },
+                                    )}
+                                    rx={15}
+                                    ry={15}
+                                />
+                            )
+                        }}
                     />
                 </TransformComponent>
             </TransformWrapper>

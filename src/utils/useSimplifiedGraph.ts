@@ -1,94 +1,12 @@
-import { gql, useQuery } from "@apollo/client"
-import React, { useMemo } from "react"
+import { useMemo } from "react"
 import { EdgeData, NodeData } from "reaflow"
-import { ErrorComponent } from "../../components/errors/Error"
-import { Flow } from "../../components/flow/Flow"
-import { Loading } from "../../components/loading/Loading"
 
-interface MethodFlowProps {
-    id: string
-    selectedInstruction?: string
-    onInstructionSelect: (instructions: InstructionModel[]) => void
-}
-
-interface MethodResponse {
-    method: MethodModel
-}
-
-interface MethodModel {
-    name: string
-    descriptor: string
-    modifiers: string
-    instructions: Connector<InstructionModel>
-}
-
-export interface InstructionModel {
-    id: string
-    opCode: string
-    lineNumber: number
-    next: string[]
-    previous: string[]
-    stack: string[]
-    enteringVariables: Connector<VariableModel>
-    exitingVariables: Connector<VariableModel>
-}
-
-export interface VariableModel {
-    name: string
-    descriptor: string
-    signature: string
-}
-
-interface GetMethodInput {
-    id: string
-}
-
-const GET_METHOD_GRAPH_QUERY = gql`
-    query GetMethodGraph($id: String!) {
-        method(id: $id) {
-            name
-            descriptor
-            modifiers
-            instructions {
-                edges {
-                    node {
-                        id
-                        opCode
-                        lineNumber
-                        next
-                        previous
-                        stack
-                        enteringVariables {
-                            edges {
-                                node {
-                                    name
-                                    descriptor
-                                    signature
-                                }
-                            }
-                        }
-                        exitingVariables {
-                            edges {
-                                node {
-                                    name
-                                    descriptor
-                                    signature
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-`
-
-interface SimpleGraph {
+export interface SimpleGraph {
     simpleNodeHash: Map<string, InstructionModel[]>
     simpleAdjList: Map<string, string[]>
 }
 
-function createSimplifiedInstructionGraph(instructions: InstructionModel[]): SimpleGraph {
+export function createSimplifiedInstructionGraph(instructions: InstructionModel[]): SimpleGraph {
     // create adj list
     const nodeHash: Map<string, InstructionModel> = new Map()
     const outList: Map<string, string[]> = new Map()
@@ -196,14 +114,16 @@ function createSimplifiedInstructionGraph(instructions: InstructionModel[]): Sim
     }
 }
 
-function useSimplifiedGraph(data?: MethodResponse): [NodeData[], EdgeData[], SimpleGraph | null] {
+export function useSimplifiedGraph(
+    method?: MethodModel,
+): [NodeData[], EdgeData[], SimpleGraph | null] {
     let simpleGraph: SimpleGraph | null = null
     return useMemo(() => {
         const nodes: NodeData[] = []
         const edges: EdgeData[] = []
-        if (data != null) {
+        if (method != null) {
             simpleGraph = createSimplifiedInstructionGraph(
-                data.method.instructions.edges.map((e) => e.node),
+                method.instructions.edges.map((e) => e.node),
             )
 
             console.log(simpleGraph)
@@ -228,29 +148,5 @@ function useSimplifiedGraph(data?: MethodResponse): [NodeData[], EdgeData[], Sim
         }
 
         return [nodes, edges, simpleGraph]
-    }, [data])
-}
-
-export function MethodFlow(props: MethodFlowProps): React.ReactElement {
-    const { data, loading, error } = useQuery<MethodResponse, GetMethodInput>(
-        GET_METHOD_GRAPH_QUERY,
-        {
-            variables: { id: props.id },
-        },
-    )
-
-    const [nodes, edges, simpleGraph] = useSimplifiedGraph(data)
-
-    if (loading) return <Loading />
-    if (error != null) return <ErrorComponent />
-
-    return (
-        <Flow
-            nodes={nodes}
-            edges={edges}
-            onNodeSelect={(node) => {
-                props.onInstructionSelect(simpleGraph?.simpleNodeHash.get(node) ?? [])
-            }}
-        />
-    )
+    }, [method])
 }

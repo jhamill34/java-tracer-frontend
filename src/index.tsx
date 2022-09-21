@@ -2,7 +2,7 @@ import { ApolloClient, ApolloProvider } from "@apollo/client"
 import React from "react"
 import { createRoot } from "react-dom/client"
 
-import { App } from "./containers/app/App"
+import { App } from "./App"
 import { cache } from "./state/cache"
 
 import "./styles.css"

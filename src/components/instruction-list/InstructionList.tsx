@@ -1,31 +1,29 @@
 import React from "react"
-import { InstructionModel } from "../../containers/flow/MethodFlow"
+import cx from "classnames"
 
-export interface InstructionDetailProps {
+export interface InstructionListProps {
+    selectedInstructionId: string | null
     instructions: InstructionModel[]
-    onClick: (i: InstructionModel) => void
-    onClose: () => void
+    onSelectInstruction: (instructionId: string) => void
 }
 
-export function InstructionList(props: InstructionDetailProps): React.ReactElement {
-    const { instructions, onClick, onClose } = props
+export function InstructionList(props: InstructionListProps): React.ReactElement {
+    const { instructions, selectedInstructionId, onSelectInstruction } = props
 
     return (
         <div>
-            <div className="p-2 bg-zinc-100 sticky top-0 shadow-md">
-                <button
-                    className="text-sm bg-transparent text-slate-600 p-2 hover:bg-slate-200 rounded-md transition-colors"
-                    onClick={onClose}
-                >
-                    Close
-                </button>
-            </div>
             {instructions.map((i) => (
                 <button
                     key={i.id}
-                    className="w-full text-slate-500 p-2 flex flex-row justify-between items-center hover:bg-slate-200 transition-colors cursor-pointer border-b-2 border-slate-200"
+                    className={cx(
+                        "w-full text-slate-500 p-2 flex flex-row justify-between items-center hover:bg-slate-200 transition-colors cursor-pointer border-b-2 border-slate-200",
+                        {
+                            "bg-slate-200": i.id === selectedInstructionId,
+                            "bg-white": i.id !== selectedInstructionId,
+                        },
+                    )}
                     onClick={() => {
-                        onClick(i)
+                        onSelectInstruction(i.id)
                     }}
                 >
                     <span className="font-mono">{i.opCode}</span>{" "}
