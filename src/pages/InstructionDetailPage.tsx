@@ -71,7 +71,18 @@ export function InstructionDetailPage(props: InstructionDetailPageProps): React.
                     Next
                 </button>
             </div>
-            <InstructionDetail instruction={instructions.at(instrIdx)} />
+            <InstructionDetail
+                instruction={instructions.at(instrIdx)}
+                onSelectClass={(id) => {
+                    navigate(`/class/${id}`)
+                }}
+                onSelectMethod={(id) => {
+                    navigate(`/method/${id}`)
+                }}
+                onSelectField={(id) => {
+                    navigate(`/class/${id}/fields`)
+                }}
+            />
         </motion.div>
     )
 }

@@ -72,8 +72,17 @@ interface InstructionModel {
     next: string[]
     previous: string[]
     stack: string[]
+    reference: ReferenceModel | null
     enteringVariables: Connector<VariableModel>
     exitingVariables: Connector<VariableModel>
+}
+
+interface ReferenceModel {
+    __typename: string
+    id: string
+    name: string
+    owner: ClassModel
+    descriptor: string
 }
 
 interface VariableModel {

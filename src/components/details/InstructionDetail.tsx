@@ -2,10 +2,13 @@ import React from "react"
 
 export interface InstructionDetailProps {
     instruction?: InstructionModel
+    onSelectMethod: (id: string) => void
+    onSelectClass: (id: string) => void
+    onSelectField: (id: string) => void
 }
 
 export function InstructionDetail(props: InstructionDetailProps): React.ReactElement | null {
-    const { instruction } = props
+    const { instruction, onSelectMethod, onSelectClass, onSelectField } = props
 
     if (instruction != null) {
         return (
@@ -58,6 +61,60 @@ export function InstructionDetail(props: InstructionDetailProps): React.ReactEle
                         </ul>
                     </>
                 )}
+
+                {instruction.reference != null &&
+                    instruction.reference.__typename === "MethodModel" && (
+                        <>
+                            <h4 className="font-semibold mb-4 mt-8">Method Call</h4>
+                            <button
+                                className="w-full text-left bg-transparent text-slate-600 p-2 enabled:hover:bg-slate-200 disabled:text-zinc-300 rounded-md transition-colors"
+                                onClick={() => {
+                                    if (instruction.reference != null) {
+                                        onSelectClass(instruction.reference.owner.id)
+                                    }
+                                }}
+                            >
+                                Owner: {instruction.reference.owner.name}
+                            </button>
+                            <button
+                                className="w-full text-left bg-transparent text-slate-600 p-2 enabled:hover:bg-slate-200 disabled:text-zinc-300 rounded-md transition-colors"
+                                onClick={() => {
+                                    if (instruction.reference != null) {
+                                        onSelectMethod(instruction.reference.id)
+                                    }
+                                }}
+                            >
+                                {instruction.reference.name} {instruction.reference.descriptor}
+                            </button>
+                        </>
+                    )}
+
+                {instruction.reference != null &&
+                    instruction.reference.__typename === "FieldModel" && (
+                        <>
+                            <h4 className="font-semibold mb-4 mt-8">Field Access</h4>
+                            <button
+                                className="w-full text-left bg-transparent text-slate-600 p-2 enabled:hover:bg-slate-200 disabled:text-zinc-300 rounded-md transition-colors"
+                                onClick={() => {
+                                    if (instruction.reference != null) {
+                                        onSelectClass(instruction.reference.owner.id)
+                                    }
+                                }}
+                            >
+                                Owner: {instruction.reference.owner.name}
+                            </button>
+                            <button
+                                className="w-full text-left bg-transparent text-slate-600 p-2 enabled:hover:bg-slate-200 disabled:text-zinc-300 rounded-md transition-colors"
+                                onClick={() => {
+                                    if (instruction.reference != null) {
+                                        onSelectField(instruction.reference.owner.id)
+                                    }
+                                }}
+                            >
+                                {instruction.reference.name}: {instruction.reference.descriptor}
+                            </button>
+                        </>
+                    )}
             </div>
         )
     } else {

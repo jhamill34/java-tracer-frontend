@@ -33,8 +33,8 @@ export function Flow(props: FlowProps): React.ReactElement {
                         fit={true}
                         edge={<Edge className="stroke-zinc-400 stroke-2 flow__custom-edge" />}
                         arrow={<MarkerArrow className="stroke-zinc-400 fill-zinc-400" />}
-                        maxWidth={4000}
-                        maxHeight={4000}
+                        maxWidth={20000}
+                        maxHeight={20000}
                         node={(nodeProps) => {
                             return (
                                 <Node

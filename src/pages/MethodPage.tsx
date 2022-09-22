@@ -107,6 +107,27 @@ export const GET_METHOD_GRAPH_QUERY = gql`
                         next
                         previous
                         stack
+                        reference {
+                            __typename
+                            ... on FieldModel {
+                                id
+                                name
+                                descriptor
+                                owner {
+                                    id
+                                    name
+                                }
+                            }
+                            ... on MethodModel {
+                                id
+                                name
+                                descriptor
+                                owner {
+                                    id
+                                    name
+                                }
+                            }
+                        }
                         enteringVariables {
                             edges {
                                 node {
