@@ -3,7 +3,9 @@ import { Route, Routes, useNavigate, useParams } from "react-router-dom"
 import { SimpleGraph } from "../utils/useSimplifiedGraph"
 import { InstructionDetailPage } from "./InstructionDetailPage"
 import { motion } from "framer-motion"
-import { InstructionList } from "../components/instruction-list/InstructionList"
+import { InstructionList } from "../components/lists/InstructionList"
+import { IoMdColorWand } from "react-icons/io"
+import cx from "classnames"
 
 export interface InstructionListPageProps {
     onLoadGroup: (groupId: string | null) => void
@@ -15,6 +17,7 @@ export function InstructionListPage(props: InstructionListPageProps): React.Reac
 
     const [instructionId, setInstructionId] = useState<string | null>(null)
     const [instructions, setInstructions] = useState<InstructionModel[]>([])
+    const [useColors, setUseColors] = useState(false)
 
     const { simpleGraph, onLoadGroup } = props
 
@@ -39,7 +42,7 @@ export function InstructionListPage(props: InstructionListPageProps): React.Reac
                 className="w-60 overflow-y-scroll border-l-2 border-zinc-200"
                 style={{ scrollbarWidth: "none" }}
             >
-                <div className="p-2 bg-zinc-100 sticky top-0 shadow-md w-full">
+                <div className="p-2 bg-zinc-100 sticky top-0 shadow-md w-full flex flex-row justify-between">
                     <button
                         className="text-sm bg-transparent text-slate-600 p-2 hover:bg-slate-200 rounded-md transition-colors"
                         onClick={() => {
@@ -51,14 +54,25 @@ export function InstructionListPage(props: InstructionListPageProps): React.Reac
                     >
                         Close
                     </button>
+                    <button
+                        className={cx(
+                            "text-sm bg-transparent text-slate-600 p-2 hover:bg-slate-200 rounded-md transition-colors",
+                            { "bg-slate-200": useColors },
+                        )}
+                        onClick={() => {
+                            setUseColors((c) => !c)
+                        }}
+                    >
+                        <IoMdColorWand />
+                    </button>
                 </div>
                 <InstructionList
+                    useColors={useColors}
                     instructions={instructions}
                     selectedInstructionId={instructionId}
                     onSelectInstruction={(id) => {
                         if (methodId != null && groupId != null) {
                             navigate(`/method/${methodId}/group/${groupId}/instruction/${id}`)
-                            onLoadGroup(null)
                         }
                     }}
                 />

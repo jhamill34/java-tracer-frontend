@@ -17,7 +17,7 @@ export function MethodDetail(props: MethodDetailProps): React.ReactElement {
                 {method.name}
                 {method.descriptor}
             </div>
-            <div className="my-4">
+            <div className="my-4 flex flex-row gap-2">
                 {method.modifiers.map((m, i) => (
                     <span key={`${m}-${i}`} className="bg-slate-200 p-2 rounded-md italic">
                         {m.toLowerCase()}

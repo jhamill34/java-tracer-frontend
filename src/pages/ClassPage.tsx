@@ -1,11 +1,14 @@
 import { gql, useQuery } from "@apollo/client"
 import React from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { Route, Routes, useNavigate, useParams } from "react-router-dom"
 import { ClassDetail } from "../components/details/ClassDetail"
 import { ErrorComponent } from "../components/errors/Error"
 import { PageLayout } from "../components/layout/PageLayout"
 import { Loading } from "../components/loading/Loading"
 import { TabNavigation } from "../components/tab/TabNavigation"
+import { ClassFieldsListPage } from "./ClassFieldsListPage"
+import { ClassMethodsListPage } from "./ClassMethodsListPage"
+import { ClassRelationsPage } from "./ClassRelationsPage"
 
 interface ClassResponse {
     class: ClassModel
@@ -41,6 +44,7 @@ export function ClassPage(): React.ReactElement {
                         />
                         <TabNavigation
                             locations={[
+                                { name: "Fields", url: `/class/${classId}/fields` },
                                 { name: "Methods", url: `/class/${classId}/methods` },
                                 { name: "Relations", url: `/class/${classId}/relations` },
                             ]}
@@ -48,7 +52,28 @@ export function ClassPage(): React.ReactElement {
                     </div>
                 }
             >
-                <div></div>
+                <Routes>
+                    <Route
+                        path="fields"
+                        element={
+                            <ClassFieldsListPage
+                                fields={data.class.fields.edges.map((n) => n.node)}
+                            />
+                        }
+                    />
+                    <Route
+                        path="methods"
+                        element={
+                            <ClassMethodsListPage
+                                methods={data.class.methods.edges.map((n) => n.node)}
+                            />
+                        }
+                    />
+                    <Route
+                        path="relations*"
+                        element={<ClassRelationsPage classModel={data.class} />}
+                    />
+                </Routes>
             </PageLayout>
         )
     } else {
@@ -59,6 +84,7 @@ export function ClassPage(): React.ReactElement {
 export const CLASS_PAGE_QUERY = gql`
     query GetClass($id: String!) {
         class(id: $id) {
+            id
             name
             packageName
             modifiers
@@ -68,6 +94,49 @@ export const CLASS_PAGE_QUERY = gql`
                         id
                         name
                         descriptor
+                        modifiers
+                    }
+                }
+            }
+            fields {
+                edges {
+                    node {
+                        id
+                        name
+                        descriptor
+                        modifiers
+                    }
+                }
+            }
+            superClass {
+                id
+                name
+                packageName
+            }
+            subClasses {
+                edges {
+                    node {
+                        id
+                        name
+                        packageName
+                    }
+                }
+            }
+            implements {
+                edges {
+                    node {
+                        id
+                        name
+                        packageName
+                    }
+                }
+            }
+            implementedBy {
+                edges {
+                    node {
+                        id
+                        name
+                        packageName
                     }
                 }
             }

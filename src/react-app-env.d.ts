@@ -41,14 +41,28 @@ interface ClassModel {
     packageName: string
     modifiers: string[]
     methods: Connector<MethodModel>
+    fields: Connector<FieldModel>
+    implements: Connector<ClassModel>
+    implementedBy: Connector<ClassModel>
+    subClasses: Connector<ClassModel>
+    superClass: ClassModel
 }
 
 interface MethodModel {
+    id: string
     name: string
     owner: ClassModel
     descriptor: string
     modifiers: string[]
     instructions: Connector<InstructionModel>
+}
+
+interface FieldModel {
+    id: string
+    name: string
+    owner: ClassModel
+    descriptor: string
+    modifiers: string[]
 }
 
 interface InstructionModel {

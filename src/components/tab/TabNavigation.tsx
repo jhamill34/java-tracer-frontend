@@ -13,7 +13,7 @@ export interface TabNavigationProps {
 export function TabNavigation(props: TabNavigationProps): React.ReactElement {
     const { locations } = props
     return (
-        <ul className="flex flex-row p-2 gap-2">
+        <ul className="max-w-screen-lg mx-auto flex flex-row p-2 gap-2">
             {locations.map((l) => (
                 <li key={l.name}>
                     <NavLink
